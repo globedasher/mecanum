@@ -70,17 +70,29 @@ void loop() {
   Serial.print(val7);
   Serial.print(" CH8:");
   Serial.print(val8);
-  Serial.print("    ");
   
-  // Convert PWM values to motor speeds (-500 to 500 for mixing)
-  int forward = map(val4, 1000, 2000, -500, 500);  // CH4: Forward/reverse
-  int strafe = map(val2, 1000, 2000, -500, 500);   // CH2: Strafe left/right (try this first)
-  int rotate = map(val1, 1000, 2000, -500, 500);   // CH1: Rotate left/right
+  // Validate pulseIn readings (0 = timeout/no signal)
+  if (val1 == 0) val1 = 1500;  // Default to center
+  if (val3 == 0) val3 = 1500;
+  if (val4 == 0) val4 = 1500;
+  
+  // Convert PWM values to motor speeds (-250 to 250 for mixing)
+  int forward = map(val4, 1000, 2000, -250, 250);  // CH4: Forward/reverse
+  int strafe = map(val3, 1000, 2000, -250, 250);   // CH3: Try this for strafe
+  int rotate = map(val1, 1000, 2000, -250, 250);   // CH1: Rotate left/right
+  
+  // Debug intermediate values
+  Serial.print(" | F:");
+  Serial.print(forward);
+  Serial.print(" S:");
+  Serial.print(strafe);
+  Serial.print(" R:");
+  Serial.print(rotate);
   
   // Apply deadband (ignore small movements)
-  if (abs(forward) < 50) forward = 0;
-  if (abs(strafe) < 50) strafe = 0;
-  if (abs(rotate) < 50) rotate = 0;
+  if (abs(forward) < 25) forward = 0;
+  if (abs(strafe) < 25) strafe = 0;
+  if (abs(rotate) < 25) rotate = 0;
   
   // Mecanum wheel kinematics
   int frontLeft = forward + strafe + rotate;
@@ -89,10 +101,20 @@ void loop() {
   int backRight = forward + strafe - rotate;
   
   // Convert to ESC signals (1000-2000µs, 1500 = stop)
-  int escFLSignal = constrain(map(frontLeft, -1000, 1000, 1000, 2000), 1000, 2000);
-  int escFRSignal = constrain(map(frontRight, -1000, 1000, 1000, 2000), 1000, 2000);
-  int escBLSignal = constrain(map(backLeft, -1000, 1000, 1000, 2000), 1000, 2000);
-  int escBRSignal = constrain(map(backRight, -1000, 1000, 1000, 2000), 1000, 2000);
+  int escFLSignal = constrain(map(frontLeft, -500, 500, 1000, 2000), 1000, 2000);
+  int escFRSignal = constrain(map(frontRight, -500, 500, 1000, 2000), 1000, 2000);
+  int escBLSignal = constrain(map(backLeft, -500, 500, 1000, 2000), 1000, 2000);
+  int escBRSignal = constrain(map(backRight, -500, 500, 1000, 2000), 1000, 2000);
+  
+  // Debug motor outputs
+  Serial.print(" FL:");
+  Serial.print(escFLSignal);
+  Serial.print(" FR:");
+  Serial.print(escFRSignal);
+  Serial.print(" BL:");
+  Serial.print(escBLSignal);
+  Serial.print(" BR:");
+  Serial.print(escBRSignal);
   
   // Write to ESCs
   escFL.writeMicroseconds(escFLSignal);
