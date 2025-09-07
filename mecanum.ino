@@ -28,10 +28,10 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   
   // Attach ESCs to pins
+  escBL.attach(8);  // Back Left
+  escBR.attach(7);   // Back Right
   escFL.attach(9);   // Front Left
   escFR.attach(10);  // Front Right 
-  escBL.attach(6);   // Back Left
-  escBR.attach(7);   // Back Right
   
   // Initialize ESCs to neutral (1500µs)
   escFL.writeMicroseconds(1500);
@@ -54,31 +54,31 @@ void loop() {
   int val8 = pulseIn(ch8, HIGH, 25000);
   
   Serial.print("\r");
-  Serial.print("CH1:");
-  Serial.print(val1);
-  Serial.print(" CH2:");
-  Serial.print(val2);
-  Serial.print(" CH3:");
-  Serial.print(val3);
-  Serial.print(" CH4:");
-  Serial.print(val4);
-  Serial.print(" CH5:");
-  Serial.print(val5);
-  Serial.print(" CH6:");
-  Serial.print(val6);
-  Serial.print(" CH7:");
-  Serial.print(val7);
-  Serial.print(" CH8:");
-  Serial.print(val8);
+  // Serial.print("CH1:");
+  // Serial.print(val1);
+  // Serial.print(" CH2:");
+  // Serial.print(val2);
+  // Serial.print(" CH3:");
+  // Serial.print(val3);
+  // Serial.print(" CH4:");
+  // Serial.print(val4);
+  // Serial.print(" CH5:");
+  // Serial.print(val5);
+  // Serial.print(" CH6:");
+  // Serial.print(val6);
+  // Serial.print(" CH7:");
+  // Serial.print(val7);
+  // Serial.print(" CH8:");
+  // Serial.print(val8);
   
   // Validate pulseIn readings (0 = timeout/no signal)
   if (val1 == 0) val1 = 1500;  // Default to center
   if (val3 == 0) val3 = 1500;
-  if (val4 == 0) val4 = 1500;
+  if (val5 == 0) val5 = 1500;
   
   // Convert PWM values to motor speeds (-250 to 250 for mixing)
-  int forward = map(val4, 1000, 2000, -250, 250);  // CH4: Forward/reverse
-  int strafe = map(val3, 1000, 2000, -250, 250);   // CH3: Try this for strafe
+  int forward = map(val5, 1000, 2000, -250, 250);  // CH5: Try this for forward
+  int strafe = map(val3, 1000, 2000, -250, 250);   // CH3: Strafe left/right
   int rotate = map(val1, 1000, 2000, -250, 250);   // CH1: Rotate left/right
   
   // Debug intermediate values
@@ -94,9 +94,9 @@ void loop() {
   if (abs(strafe) < 25) strafe = 0;
   if (abs(rotate) < 25) rotate = 0;
   
-  // Mecanum wheel kinematics
-  int frontLeft = forward + strafe + rotate;
-  int frontRight = forward - strafe - rotate;
+  // Mecanum wheel kinematics - front wheels reversed
+  int frontLeft = -(forward + strafe + rotate);
+  int frontRight = -(forward - strafe - rotate);
   int backLeft = forward - strafe + rotate;
   int backRight = forward + strafe - rotate;
   
