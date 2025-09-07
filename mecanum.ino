@@ -6,14 +6,14 @@ int ch3 = A2;  // RF channel 3
 int ch4 = A3;  // RF channel 4 Forward/reverse
 int ch5 = A4;  // RF channel 5
 int ch6 = A5;  // RF channel 6 right shoulder switch - no action currently
-int ch7 = 2;   // RF channel 7 (D2) left shoulder potentiometer - no cation currently
+int ch7 = 4;   // RF channel 7 (D4) - moved from D2
 int ch8 = 3;   // RF channel 8 (D3) left shoulder swithch - no action currently
 
 // ESC objects for mecanum wheels
-Servo escFL;  // Front Left ESC (D5)
-Servo escFR;  // Front Right ESC (D6) 
-Servo escBL;  // Back Left ESC (D10)
-Servo escBR;  // Back Right ESC (D11)
+Servo escFL;  // Front Left ESC (D9)
+Servo escFR;  // Front Right ESC (D10) 
+Servo escBL;  // Back Left ESC (D6)
+Servo escBR;  // Back Right ESC (D7)
 
 void setup() {
   Serial.begin(9600);
@@ -28,10 +28,10 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   
   // Attach ESCs to pins
-  escFL.attach(5);
-  escFR.attach(6);
-  escBL.attach(10);
-  escBR.attach(11);
+  escFL.attach(9);   // Front Left
+  escFR.attach(10);  // Front Right 
+  escBL.attach(6);   // Back Left
+  escBR.attach(7);   // Back Right
   
   // Initialize ESCs to neutral (1500µs)
   escFL.writeMicroseconds(1500);
