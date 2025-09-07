@@ -54,31 +54,31 @@ void loop() {
   int val8 = pulseIn(ch8, HIGH, 25000);
   
   Serial.print("\r");
-  // Serial.print("CH1:");
-  // Serial.print(val1);
-  // Serial.print(" CH2:");
-  // Serial.print(val2);
-  // Serial.print(" CH3:");
-  // Serial.print(val3);
-  // Serial.print(" CH4:");
-  // Serial.print(val4);
-  // Serial.print(" CH5:");
-  // Serial.print(val5);
-  // Serial.print(" CH6:");
-  // Serial.print(val6);
-  // Serial.print(" CH7:");
-  // Serial.print(val7);
-  // Serial.print(" CH8:");
-  // Serial.print(val8);
+  Serial.print("CH1:");
+  Serial.print(val1);
+  Serial.print(" CH2:");
+  Serial.print(val2);
+  Serial.print(" CH3:");
+  Serial.print(val3);
+  Serial.print(" CH4:");
+  Serial.print(val4);
+  Serial.print(" CH5:");
+  Serial.print(val5);
+  Serial.print(" CH6:");
+  Serial.print(val6);
+  Serial.print(" CH7:");
+  Serial.print(val7);
+  Serial.print(" CH8:");
+  Serial.print(val8);
   
   // Validate pulseIn readings (0 = timeout/no signal)
   if (val1 == 0) val1 = 1500;  // Default to center
-  if (val3 == 0) val3 = 1500;
+  if (val4 == 0) val4 = 1500;
   if (val5 == 0) val5 = 1500;
   
   // Convert PWM values to motor speeds (-250 to 250 for mixing)
-  int forward = map(val5, 1000, 2000, -250, 250);  // CH5: Try this for forward
-  int strafe = map(val3, 1000, 2000, -250, 250);   // CH3: Strafe left/right
+  int forward = map(val3, 1000, 2000, -250, 250);  // CH3: Forward/reverse
+  int strafe = map(val4, 1000, 2000, -250, 250);   // CH4: Strafe left/right
   int rotate = map(val1, 1000, 2000, -250, 250);   // CH1: Rotate left/right
   
   // Debug intermediate values
