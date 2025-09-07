@@ -53,74 +53,65 @@ void loop() {
   int val7 = pulseIn(ch7, HIGH, 25000);
   int val8 = pulseIn(ch8, HIGH, 25000);
   
+  // Filter out interference - ignore readings below 900µs (invalid PWM)
+  if (val1 < 900) val1 = 0;
+  if (val2 < 900) val2 = 0;
+  if (val3 < 900) val3 = 0;
+  if (val4 < 900) val4 = 0;
+  if (val5 < 900) val5 = 0;
+  if (val6 < 900) val6 = 0;
+  if (val7 < 900) val7 = 0;
+  if (val8 < 900) val8 = 0;
+  
+  // Simple controller input display with consistent spacing
   Serial.print("\r");
-  // Serial.print("CH1:");
-  // Serial.print(val1);
-  // Serial.print(" CH2:");
-  // Serial.print(val2);
-  // Serial.print(" CH3:");
-  // Serial.print(val3);
-  // Serial.print(" CH4:");
-  // Serial.print(val4);
-  // Serial.print(" CH5:");
-  // Serial.print(val5);
-  // Serial.print(" CH6:");
-  // Serial.print(val6);
-  // Serial.print(" CH7:");
-  // Serial.print(val7);
-  // Serial.print(" CH8:");
-  // Serial.print(val8);
+  Serial.print("CH1:");
+  if(val1 < 1000) Serial.print(" ");
+  if(val1 < 100) Serial.print(" ");
+  if(val1 < 10) Serial.print(" ");
+  Serial.print(val1);
+  Serial.print(" CH2:");
+  if(val2 < 1000) Serial.print(" ");
+  if(val2 < 100) Serial.print(" ");
+  if(val2 < 10) Serial.print(" ");
+  Serial.print(val2);
+  Serial.print(" CH3:");
+  if(val3 < 1000) Serial.print(" ");
+  if(val3 < 100) Serial.print(" ");
+  if(val3 < 10) Serial.print(" ");
+  Serial.print(val3);
+  Serial.print(" CH4:");
+  if(val4 < 1000) Serial.print(" ");
+  if(val4 < 100) Serial.print(" ");
+  if(val4 < 10) Serial.print(" ");
+  Serial.print(val4);
+  Serial.print(" CH5:");
+  if(val5 < 1000) Serial.print(" ");
+  if(val5 < 100) Serial.print(" ");
+  if(val5 < 10) Serial.print(" ");
+  Serial.print(val5);
+  Serial.print(" CH6:");
+  if(val6 < 1000) Serial.print(" ");
+  if(val6 < 100) Serial.print(" ");
+  if(val6 < 10) Serial.print(" ");
+  Serial.print(val6);
+  Serial.print(" CH7:");
+  if(val7 < 1000) Serial.print(" ");
+  if(val7 < 100) Serial.print(" ");
+  if(val7 < 10) Serial.print(" ");
+  Serial.print(val7);
+  Serial.print(" CH8:");
+  if(val8 < 1000) Serial.print(" ");
+  if(val8 < 100) Serial.print(" ");
+  if(val8 < 10) Serial.print(" ");
+  Serial.print(val8);
+  Serial.print("    "); // Clear any leftover characters
   
-  // Validate pulseIn readings (0 = timeout/no signal)
-  if (val1 == 0) val1 = 1500;  // Default to center
-  if (val3 == 0) val3 = 1500;
-  if (val5 == 0) val5 = 1500;
-  
-  // Convert PWM values to motor speeds (-250 to 250 for mixing)
-  int forward = map(val5, 1000, 2000, -250, 250);  // CH5: Try this for forward
-  int strafe = map(val3, 1000, 2000, -250, 250);   // CH3: Strafe left/right
-  int rotate = map(val1, 1000, 2000, -250, 250);   // CH1: Rotate left/right
-  
-  // Debug intermediate values
-  Serial.print(" | F:");
-  Serial.print(forward);
-  Serial.print(" S:");
-  Serial.print(strafe);
-  Serial.print(" R:");
-  Serial.print(rotate);
-  
-  // Apply deadband (ignore small movements)
-  if (abs(forward) < 25) forward = 0;
-  if (abs(strafe) < 25) strafe = 0;
-  if (abs(rotate) < 25) rotate = 0;
-  
-  // Mecanum wheel kinematics - front wheels reversed
-  int frontLeft = -(forward + strafe + rotate);
-  int frontRight = -(forward - strafe - rotate);
-  int backLeft = forward - strafe + rotate;
-  int backRight = forward + strafe - rotate;
-  
-  // Convert to ESC signals (1000-2000µs, 1500 = stop)
-  int escFLSignal = constrain(map(frontLeft, -500, 500, 1000, 2000), 1000, 2000);
-  int escFRSignal = constrain(map(frontRight, -500, 500, 1000, 2000), 1000, 2000);
-  int escBLSignal = constrain(map(backLeft, -500, 500, 1000, 2000), 1000, 2000);
-  int escBRSignal = constrain(map(backRight, -500, 500, 1000, 2000), 1000, 2000);
-  
-  // Debug motor outputs
-  Serial.print(" FL:");
-  Serial.print(escFLSignal);
-  Serial.print(" FR:");
-  Serial.print(escFRSignal);
-  Serial.print(" BL:");
-  Serial.print(escBLSignal);
-  Serial.print(" BR:");
-  Serial.print(escBRSignal);
-  
-  // Write to ESCs
-  escFL.writeMicroseconds(escFLSignal);
-  escFR.writeMicroseconds(escFRSignal);
-  escBL.writeMicroseconds(escBLSignal);
-  escBR.writeMicroseconds(escBRSignal);
+  // Stop all motors
+  escFL.writeMicroseconds(1500);
+  escFR.writeMicroseconds(1500);
+  escBL.writeMicroseconds(1500);
+  escBR.writeMicroseconds(1500);
   
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
