@@ -27,10 +27,10 @@ This project is designed for Arduino development and may support PlatformIO base
 **Radio Control:**
 - Radiolink R8EF receiver in PWM mode
 - CH1 (A0): Rotate left/right - WORKING
-- CH2 (A1): Unknown function
-- CH3 (A2): Strafe left/right candidate - TESTING
-- CH4 (A3): Forward/reverse - NOT RESPONDING TO INPUT
-- CH5 (A4): Unknown function  
+- CH2 (A1): Unknown function (interference/noise)
+- CH3 (A2): Forward/reverse - WORKING  
+- CH4 (A3): Strafe left/right - WORKING
+- CH5 (A4): Unknown function
 - CH6 (A5): Right shoulder switch
 - CH7 (D4): Left shoulder potentiometer (moved from D2)
 - CH8 (D3): Left shoulder switch
@@ -38,15 +38,14 @@ This project is designed for Arduino development and may support PlatformIO base
 **Motor Control (ESCs):**
 - Front Left: D9 (escFL)
 - Front Right: D10 (escFR) 
-- Back Left: D6 (escBL)
+- Back Left: D8 (escBL) - moved from D6 due to D5 pin failure
 - Back Right: D7 (escBR)
 - All use Servo library for ESC control (1000-2000µs, 1500=stop)
 
 **Current Issues:**
-- CH4 (forward/reverse) not responding to stick input - reading constant values
-- CH2 also not responding - may need to identify correct strafe channel
-- Need to test CH3 or CH5 for strafe functionality
-- Motor calculations working correctly when inputs are valid
+- Robot rotates instead of proper mecanum movement - kinematics math needs adjustment
+- CH2 interference/noise on unused channels - may need hardware filtering (pullup resistors/caps)
+- All three control inputs (CH1, CH3, CH4) are working and motors respond
 
 ## Architecture
 
